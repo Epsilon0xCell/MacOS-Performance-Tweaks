@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # macOS-performance
 Performance Tweaks for macOS
 
