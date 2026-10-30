@@ -9,6 +9,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# What this script does not have: any error handling. There is no set -e
+# and almost no command checks its result, so a failure halfway down does
+# not stop the rest, including the deletions near the end. The output is
+# a log of attempts, not a record of what actually took effect.
+
 # System Animations and UI Performance
 echo "📱 Optimizing System Animations..."
 # Disable window animations
@@ -163,6 +168,11 @@ defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
 # Additional System Optimizations
 echo "⚙️ Applying System Optimizations..."
+# boot-args is a single string that every nvram write replaces as a
+# whole. This second write therefore re-reads the current value and
+# carries it forward, which is the only reason the npci=0x2000 flag set
+# in the CPU section above survives. Replacing this with a fresh literal
+# string would silently drop that flag.
 sudo nvram boot-args="serverperfmode=1 $(nvram boot-args 2>/dev/null | cut -f 2-)"
 sudo sysctl -w kern.maxvnodes=750000
 sudo sysctl -w kern.maxproc=2500
