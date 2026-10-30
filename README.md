@@ -1,6 +1,6 @@
 ![Banner](banner.png)
 
-# macOS-performance
+# MacOS-Performance-Tweaks
 Performance Tweaks for macOS
 
 ```
