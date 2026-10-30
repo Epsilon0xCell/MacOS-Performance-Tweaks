@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MacOS-Performance-Tweaks: Field Manual</title>
+<!-- pages-campaign site for Epsilon0xCell/MacOS-Performance-Tweaks; source of truth: MacOS-Performance-Tweaks-Website/ on the default branch -->
+<style>
+  /* I set this page as a field manual broadside: one wide column, big
+     margins, numbered entries, serif type. A manual does not decorate.
+     The warning goes at the top where a manual puts its warnings, in
+     the largest type on the page after the title. */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e8e2d2; color: #26241e; font-family: Georgia, "Times New Roman", serif; }
+  .page { max-width: 860px; margin: 0 auto; background: #f8f4e7; padding: 54px 72px 70px; border-left: 1px solid #b9b09a; border-right: 1px solid #b9b09a; }
+  @media (max-width: 700px) { .page { padding: 36px 24px 54px; } }
+  .manual-no { text-align: center; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { text-align: center; font-size: 36px; margin: 0 0 8px; line-height: 1.2; }
+  .subtitle { text-align: center; font-style: italic; font-size: 17px; margin: 0 0 22px; }
+  .rule { border: none; border-top: 3px solid #26241e; margin: 18px 0; }
+  .rule.thin { border-top-width: 1px; }
+  .banner { width: 100%; height: auto; display: block; border: 2px solid #26241e; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 16px 0 4px; }
+  .badges img { height: 20px; }
+  .warning { border: 3px solid #8e2318; color: #8e2318; padding: 20px 24px; margin: 28px 0; }
+  .warning h2 { margin: 0 0 8px; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; border: none; text-align: left; }
+  .warning p { margin: 0; color: #5c1710; }
+  h2 { font-size: 15px; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin: 44px 0 18px; }
+  p { font-size: 16.5px; line-height: 1.75; }
+  .entry { display: grid; grid-template-columns: 64px 1fr; gap: 16px; margin: 0 0 20px; }
+  .entry .no { font-size: 24px; font-weight: bold; border-top: 2px solid #26241e; padding-top: 4px; }
+  .entry h3 { margin: 4px 0 5px; font-size: 17.5px; }
+  .entry p { margin: 0; font-size: 15.5px; line-height: 1.65; }
+  code { font-family: "Courier New", monospace; font-size: 0.92em; background: #ece5cf; padding: 0 4px; }
+  pre { background: #26241e; color: #f2ecd9; padding: 15px 18px; font-size: 14px; line-height: 1.6; overflow-x: auto; }
+  pre code { background: none; padding: 0; color: inherit; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .chip { border: 1.5px solid #26241e; padding: 4px 11px; font-size: 13px; font-family: "Courier New", monospace; }
+  a { color: #8e2318; }
+  footer { text-align: center; font-size: 13.5px; margin-top: 50px; }
+  footer p { font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <p class="manual-no">Field manual / one script / 309 lines / read before touching</p>
+  <h1>MacOS-Performance-Tweaks</h1>
+  <p class="subtitle">Performance tweaks for macOS, in <code>boost_macos_performance.sh</code>.</p>
+  <img class="banner" src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/banner.png" alt="MacOS-Performance-Tweaks banner">
+  <div class="badges">
+    <img src="https://img.shields.io/github/stars/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Stars">
+    <img src="https://img.shields.io/github/forks/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Forks">
+    <img src="https://img.shields.io/github/last-commit/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Last commit">
+    <img src="https://img.shields.io/github/languages/top/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Top language">
+    <img src="https://img.shields.io/github/repo-size/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Repo size">
+    <img src="https://img.shields.io/github/license/Epsilon0xCell/MacOS-Performance-Tweaks" alt="License">
+  </div>
+
+  <div class="warning">
+    <h2>Warning: do not run this script as written</h2>
+    <!-- This box is my own warning from the README, kept first and kept
+         loud. A manual that buries this under the entries would be lying
+         about what kind of document it is. -->
+    <p>My own warning stands, and this page keeps it first: do not use this script. It will most likely break your system, and further research is needed before any part of it is trusted. It deletes logs, caches, and trash contents, disables Time Machine local snapshots, runs <code>fsck -fy</code> on the live disk, changes boot arguments and kernel limits, rewrites DNS servers and network settings, and rebuilds indexes. It is preserved here as a research draft, not as a tool I recommend. Nothing in the improvement passes makes it safe to run, and this manual is a description of the script, not an invitation.</p>
+  </div>
+
+  <h2>What this is</h2>
+  <p>I collected every macOS tuning command I had gathered into one bash script, section by section, each section announcing itself with an echo line as it runs. Read as a list of settings, it is a fair record of what people tweak: Dock timing, Finder animations, Safari delays, hibernation, kernel limits, DNS. Read as a program, it is a draft with no brakes. There is no <code>set -e</code> and almost no command checks its result, so a failure halfway down does not stop the deletions near the end. The output is a log of attempts, not a record of what took effect.</p>
+  <p>I keep the repo because the list itself is useful to study and because the fixes the campaign made to it are worth showing. But the honest summary is the warning above. If a single entry below interests you, the entry is a starting point for your own research on that one setting, never a reason to run the whole file.</p>
+
+  <hr class="rule">
+  <h2>The entries, in the order the script runs them</h2>
+
+  <div class="entry"><div class="no">01</div><div>
+    <h3>The root gate</h3>
+    <p>The script checks <code>$EUID</code> first and refuses to continue without root, printing "Please run as root (using sudo)". In Wave 5 I fixed what that refusal returned: it used to exit with status 0, so a refused run looked successful. It exits 1 now.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">02</div><div>
+    <h3>System animations and UI</h3>
+    <p>Window, Dock, and Mission Control animation timing, Dock autohide delay, Dashboard off, CrashReporter dialog set to none, smart quotes and smart dashes off, and automatic restart on freeze. This section also turns off the "Are you sure you want to open this application?" dialog (<code>LSQuarantine</code> false). That prompt is a real safety check on downloaded apps, not decoration, and trading it away is one reason the warning sits at the top of this page.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">03</div><div>
+    <h3>Finder</h3>
+    <p>Finder animations off, POSIX path shown in the title, list view as the preferred style, and the extension-change and empty-trash warnings off.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">04</div><div>
+    <h3>Safari</h3>
+    <p>Three WebKit layout delay values set to 0.25. Later sections add Safari debug settings: the internal debug menu and developer extras, under the security entries.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">05</div><div>
+    <h3>Memory and power</h3>
+    <p><code>purge</code>, the daily, weekly, and monthly periodic jobs, then <code>pmset</code> changes: hibernation mode 0, sudden motion sensor off, Power Nap off, proximity wake off, and TCP keepalive off.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">06</div><div>
+    <h3>CPU, GPU, and the first boot-args write</h3>
+    <p>An <code>nvram</code> write adding <code>npci=0x2000</code> to boot-args, and two timer coalescing sysctls set to 0. A boot-args write replaces the whole string, so this line re-reads the current value and carries it forward. That re-read pattern matters again at entry 11.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">07</div><div>
+    <h3>Disk and Time Machine snapshots</h3>
+    <p>An APFS defragment status probe per volume, gated on FileVault's <code>fdesetup</code> answering at all, then <code>tmutil deletelocalsnapshots /</code> and <code>diskutil repairVolume /</code>. The local snapshots go here, near the top, long before entry 14 turns Time Machine off outright.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">08</div><div>
+    <h3>Mail and Photos databases</h3>
+    <p>SQLite vacuums run in place: the Mail envelope index (found through a <code>V*</code> path glob that a macOS update can move) and every <code>.db</code> under the Photos library. If Mail or Photos is running and holds the database locked, the vacuum fails and, with no error handling, nobody sees it.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">09</div><div>
+    <h3>Network, first pass</h3>
+    <p>TCP delayed ack off, larger receive and send spaces, and DNS hardcoded to 1.1.1.1, 1.0.0.1, 8.8.8.8, and 8.8.4.4 on the service named "Wi-Fi". On a Mac where that service is named differently, or that is on Ethernet, this fails quietly.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">10</div><div>
+    <h3>System integrity, and the Gatekeeper entry</h3>
+    <p>This is the safety entry of this manual, so I will state it exactly. Under the system integrity section the script runs <code>sudo spctl --master-enable</code>: Gatekeeper is switched on, not off. An earlier version of this script ran <code>spctl --master-disable</code> under a security heading, turning a protection off while claiming to add one. Wave 5 reversed that line, and the script's own final line then asks for a restart so the changes take effect: "Please restart your Mac for all changes to take effect." Protection is re-enabled and left enabled; nothing in the current script turns it off. The same section runs the leftover <code>repair_packages</code> verify, a command from older macOS releases that is gone or refuses on a current system, and prints the SIP status with <code>csrutil status</code>.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">11</div><div>
+    <h3>Deep cleanup, logs, and caches</h3>
+    <p>The point of no return in this script: the sleep image, language and speech data, suggestions, Quick Look support files, and help caches are deleted with no trash, no confirmation, and no list kept. Log files under Application Support and Containers follow. Later sections delete system logs, temporary files, and all of <code>~/Library/Caches</code>, more than once.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">12</div><div>
+    <h3>Menu bar and the security settings section</h3>
+    <p>The menu extras list is set to Bluetooth, Volume, Battery, and Clock. The section headed "Security Optimizations" writes two <code>com.apple.security</code> values, <code>GKAutoRearm</code> false and <code>RSAMaxKeySize</code> 8192, next to the Safari debug settings. I list what the section contains; the heading is the script's, and entry 10 is where the Gatekeeper fact lives.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">13</div><div>
+    <h3>Kernel limits and the second boot-args write</h3>
+    <p>A second <code>nvram</code> write adds <code>serverperfmode=1</code>, and its re-read of the current boot-args is the only reason the <code>npci=0x2000</code> flag from entry 06 survives; a fresh literal string here would silently drop it. Kernel limits follow: <code>kern.maxvnodes</code> 750000, <code>kern.maxproc</code> 2500, <code>kern.maxfiles</code>, and a launchctl file limit. None of these values is read back afterwards, so a rejected limit and an applied one look identical in the output.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">14</div><div>
+    <h3>Indexes, permissions, Time Machine off, trash, disk check</h3>
+    <p>Spotlight is rebuilt with <code>mdutil -E /</code>, disk permissions are repaired with a command modern macOS has retired, font caches are cleared, and Time Machine is disabled with <code>tmutil disable</code> and <code>disablelocal</code>. After this entry there is no local backup left to fall back on if a tweak above was a mistake. The trash is emptied with <code>rm</code>, Launch Services is rebuilt, the locate database is updated, and the script runs <code>fsck -fy</code> on the live disk.</p>
+  </div></div>
+
+  <div class="entry"><div class="no">15</div><div>
+    <h3>Network, second pass, and service restarts</h3>
+    <p>IPv6 is switched off on Wi-Fi while the MTU is set to 9000 on <code>en0</code>, which on a desktop Mac is usually Ethernet, not the same interface. A 9000 MTU only helps if the rest of the local network takes jumbo frames; if it does not, large transfers can stall instead of speeding up. The script ends by flushing the DNS cache, restarting Finder and the Dock, and printing the restart request quoted in entry 10.</p>
+  </div></div>
+
+  <hr class="rule thin">
+  <h2>Corrections on record</h2>
+  <p>Three fixes from Wave 5, all checkable in the current file. The non-root refusal now exits 1 instead of 0 (entry 01). Duplicated settings were removed: the second <code>expose-animation-duration</code>, the second <code>autohide-delay</code>, the second <code>NSWindowResizeTime</code>, the plain <code>IncludeInternalDebugMenu 1</code> (the later <code>-bool true</code> form is kept), and the second <code>killall -HUP mDNSResponder</code> in the cleanup block. And the Gatekeeper line was reversed from disable to enable (entry 10). Other destructive or obsolete commands, <code>repair_packages</code>, <code>repairPermissions</code>, and <code>fsck -fy</code> among them, were left exactly as written and are covered by the warning rather than silently rewritten into a different script.</p>
+
+  <h2>How this script was checked</h2>
+  <!-- The only command I show on this page is the syntax check, because
+       it is the only command anyone involved actually ran. Putting the
+       script's own invocation here would read as instructions, and the
+       warning above says the opposite. -->
+  <pre><code>$ bash -n boost_macos_performance.sh
+(no output: syntax OK)</code></pre>
+  <p>That is the whole verification: <code>bash -n</code>, before and after the fixes, plus reading. The script was not run live in any pass, by design, because running it changes a real Mac's settings and deletes files, and the staging machine is Linux in any case. I did not execute it for this page either.</p>
+
+  <div class="chips">
+    <span class="chip">Bash</span>
+    <span class="chip">macOS defaults</span>
+    <span class="chip">pmset</span>
+    <span class="chip">nvram boot-args</span>
+    <span class="chip">spctl (Gatekeeper)</span>
+    <span class="chip">diskutil / tmutil</span>
+  </div>
+  <p style="text-align:center">Source: <a href="https://github.com/Epsilon0xCell/MacOS-Performance-Tweaks">github.com/Epsilon0xCell/MacOS-Performance-Tweaks</a> / Profile: <a href="https://github.com/Epsilon0xCell">github.com/Epsilon0xCell</a></p>
+
+  <hr class="rule">
+  <footer>
+    <p>Built by Epsilon0xCell</p>
+    <p>Manual set in Georgia with wide margins, the way the script should have been written: slowly, and with the warning first.</p>
+  </footer>
+
+</div>
+</body>
+</html>
