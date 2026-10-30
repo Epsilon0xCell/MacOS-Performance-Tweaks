@@ -4,9 +4,9 @@ echo "🚀 macOS Performance Optimization Script"
 echo "--------------------------------------"
 
 # Check if running with sudo
-if [ "$EUID" -ne 0 ]; then 
+if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (using sudo)"
-    exit
+    exit 1
 fi
 
 # System Animations and UI Performance
@@ -15,9 +15,6 @@ echo "📱 Optimizing System Animations..."
 defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 
 # Disable Mission Control animations
-defaults write com.apple.dock expose-animation-duration -float 0.1
-
-# Speed up Mission Control animations
 defaults write com.apple.dock expose-animation-duration -float 0.1
 
 # Disable the delay when hiding the Dock
@@ -35,9 +32,6 @@ defaults write com.apple.dock launchanim -bool false
 # Disable the "Are you sure you want to open this application?" dialog
 defaults write com.apple.LaunchServices LSQuarantine -bool false
 
-# Remove the delay for showing the Dock
-defaults write com.apple.dock autohide-delay -float 0
-
 # Disable Dashboard
 defaults write com.apple.dashboard mcx-disabled -bool true
 
@@ -46,9 +40,6 @@ defaults write com.apple.dock dashboard-in-overlay -bool true
 
 # Automatically restart if the computer freezes
 sudo systemsetup -setrestartfreeze on
-
-# Increase window resize speed for Cocoa applications
-defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
 
 # Disable smart quotes as they’re annoying when typing code
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
@@ -74,7 +65,6 @@ echo "🌐 Optimizing Safari..."
 defaults write com.apple.Safari WebKitInitialTimedLayoutDelay 0.25
 defaults write com.apple.Safari WebKitResourceTimedLayoutDelay 0.25
 defaults write com.apple.Safari WebKitBackgroundTimedLayoutDelay 0.25
-defaults write com.apple.Safari IncludeInternalDebugMenu 1
 
 # Memory Management
 echo "💾 Optimizing Memory Management..."
@@ -140,7 +130,9 @@ defaults write com.apple.icloud.searchparty SPDebugSystemEnabled -bool false
 # System Integrity
 echo "🛡️ Checking System Integrity..."
 sudo /usr/libexec/repair_packages --verify --standard-pkgs /
-sudo spctl --master-disable
+# Keep Gatekeeper enabled. The old script disabled it here, under a
+# "Security Enhancements" heading, which is the opposite of security.
+sudo spctl --master-enable
 sudo csrutil status
 
 # Additional System Cleanup
@@ -248,7 +240,6 @@ sudo killall -HUP mDNSResponder
 
 # Restart system services
 echo "🔄 Restarting System Services..."
-sudo killall -HUP mDNSResponder
 sudo killall -HUP mDNSResponderHelper
 sudo killall Finder
 sudo killall Dock
