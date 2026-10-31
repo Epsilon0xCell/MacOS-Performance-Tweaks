@@ -1,5 +1,33 @@
 #!/bin/bash
 
+# WARNING: READ THIS BEFORE YOU RUN ANYTHING IN THIS FILE
+#
+# This script does things that cannot be undone. Each item below
+# now stops and asks you to type YES for that step before it runs.
+# If you type anything else, or press Enter, that step is skipped.
+# Typing YES once does not carry over to the next step.
+#
+# The steps that ask are:
+# - Turning off the LaunchServices quarantine prompt for
+#   downloaded apps. With that prompt off, macOS no longer asks
+#   before you open an app you downloaded.
+# - Deleting local Time Machine snapshots. Those snapshots are
+#   gone for good once deleted.
+# - Turning Time Machine off, including local snapshots. After
+#   that step there is no local backup left on this machine.
+# - Deleting files with no list kept and no move to the Trash:
+#   the sleep image, language and speech data, system logs, user
+#   logs, temporary files, caches, font caches, and the contents
+#   of the Trash itself. Deleted means deleted.
+# - Running fsck -fy on the live disk this script is running
+#   from. That check runs against a mounted system disk.
+#
+# The rest of the script changes settings such as animations,
+# DNS servers, power settings, boot arguments, and kernel
+# limits. Those changes are not gated, and the README warning
+# still stands: this is a research draft, not a tool I trust
+# on a machine I need.
+
 echo "🚀 macOS Performance Optimization Script"
 echo "--------------------------------------"
 
@@ -12,6 +40,25 @@ if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (using sudo)"
     exit 1
 fi
+
+# I gate every step listed in the warning at the top behind this
+# prompt. The person running the script has to type YES, in full,
+# for that one step. Any other answer skips the step. I read from
+# /dev/tty so a piped or unattended run cannot answer by accident:
+# with no terminal to type at, every gated step is skipped.
+confirm_step() {
+    step_name="$1"
+    echo ""
+    echo "Next step: $step_name"
+    echo "This step cannot be undone."
+    printf "Type YES to run this step, or press Enter to skip it: "
+    read -r confirm_reply < /dev/tty || confirm_reply=""
+    if [ "$confirm_reply" = "YES" ]; then
+        return 0
+    fi
+    echo "Skipped: $step_name"
+    return 1
+}
 
 # I have no error handling in this script at all. There is no set -e
 # and almost no command checks its result, so a failure halfway down
@@ -37,7 +84,9 @@ defaults write com.apple.dock launchanim -bool false
 # dialog. I know that prompt is a real safety check on downloaded
 # apps, not decoration. I trade it away here for fewer interruptions,
 # and that trade is one reason the README says not to run this.
-defaults write com.apple.LaunchServices LSQuarantine -bool false
+if confirm_step "Turn off the LaunchServices quarantine prompt for downloaded apps"; then
+    defaults write com.apple.LaunchServices LSQuarantine -bool false
+fi
 
 defaults write com.apple.dashboard mcx-disabled -bool true
 
@@ -106,7 +155,9 @@ echo "💿 Performing Advanced Disk Optimizations..."
 sudo fdesetup status >/dev/null 2>&1 && diskutil apfs list | grep "Volume" | awk '{print $NF}' | while read -r volume; do
     sudo diskutil apfs defragment "$volume" status
 done
-sudo tmutil deletelocalsnapshots /
+if confirm_step "Delete local Time Machine snapshots"; then
+    sudo tmutil deletelocalsnapshots /
+fi
 sudo diskutil repairVolume /
 
 # Mail Optimization
@@ -171,14 +222,16 @@ sudo csrutil status
 # removed. I delete ~/Library/Caches again in the clear at the
 # bottom, so a second pass over an already empty folder is normal.
 echo "🧹 Deep System Cleanup..."
-sudo rm -rf /private/var/vm/sleepimage
-sudo rm -rf ~/Library/LanguageModeling/*
-sudo rm -rf ~/Library/Speech/*
-sudo rm -rf ~/Library/Suggestions/*
-sudo rm -rf ~/Library/Application\ Support/Quick\ Look/*
-sudo rm -rf ~/Library/Caches/com.apple.helpd/*
-find ~/Library/Application\ Support -name "*.log" -delete
-find ~/Library/Containers -name "*.log" -delete
+if confirm_step "Delete the sleep image, language and speech data, suggestions, Quick Look data, help caches, and log files under Application Support and Containers"; then
+    sudo rm -rf /private/var/vm/sleepimage
+    sudo rm -rf ~/Library/LanguageModeling/*
+    sudo rm -rf ~/Library/Speech/*
+    sudo rm -rf ~/Library/Suggestions/*
+    sudo rm -rf ~/Library/Application\ Support/Quick\ Look/*
+    sudo rm -rf ~/Library/Caches/com.apple.helpd/*
+    find ~/Library/Application\ Support -name "*.log" -delete
+    find ~/Library/Containers -name "*.log" -delete
+fi
 
 # Menu Bar Optimization
 echo "📊 Optimizing Menu Bar..."
@@ -213,16 +266,20 @@ sudo launchctl limit maxfiles 65535 200000
 
 # Clean up system logs
 echo "🧹 Cleaning System Logs..."
-sudo rm -rf /private/var/log/*
-sudo rm -rf ~/Library/Logs/*
-sudo rm -rf /Library/Logs/*
+if confirm_step "Delete all system logs and user logs"; then
+    sudo rm -rf /private/var/log/*
+    sudo rm -rf ~/Library/Logs/*
+    sudo rm -rf /Library/Logs/*
+fi
 
 # Clean up temporary files
 echo "🗑️ Cleaning Temporary Files..."
-sudo rm -rf /private/var/tmp/*
-sudo rm -rf /private/var/folders/*
-sudo rm -rf ~/Library/Caches/*
-sudo rm -rf ~/Library/Application\ Support/Caches/*
+if confirm_step "Delete temporary files and all user caches"; then
+    sudo rm -rf /private/var/tmp/*
+    sudo rm -rf /private/var/folders/*
+    sudo rm -rf ~/Library/Caches/*
+    sudo rm -rf ~/Library/Application\ Support/Caches/*
+fi
 
 # Rebuild Spotlight index
 echo "🔍 Rebuilding Spotlight Index..."
@@ -234,9 +291,11 @@ sudo diskutil repairPermissions /
 
 # Clear font caches
 echo "🔤 Clearing Font Caches..."
-sudo atsutil databases -remove
-sudo rm -rf ~/Library/Font\ Caches/*
-sudo rm -rf /Library/Caches/com.apple.ATS/*
+if confirm_step "Clear font caches and delete the font cache folders"; then
+    sudo atsutil databases -remove
+    sudo rm -rf ~/Library/Font\ Caches/*
+    sudo rm -rf /Library/Caches/com.apple.ATS/*
+fi
 
 # Optimize Time Machine
 # I disable Time Machine outright instead of only trimming it, and I
@@ -244,8 +303,10 @@ sudo rm -rf /Library/Caches/com.apple.ATS/*
 # section there is no local backup left to fall back on if one of
 # the tweaks above turns out to be a mistake.
 echo "⏰ Optimizing Time Machine..."
-sudo tmutil disable
-sudo tmutil disablelocal
+if confirm_step "Turn Time Machine off and turn local snapshots off"; then
+    sudo tmutil disable
+    sudo tmutil disablelocal
+fi
 
 # Network Optimization
 echo "🌐 Optimizing Network..."
@@ -259,7 +320,9 @@ sudo ifconfig en0 mtu 9000
 
 # Empty trash securely
 echo "🗑️ Securely Emptying Trash..."
-sudo rm -rf ~/.Trash/*
+if confirm_step "Empty the Trash and delete its contents for good"; then
+    sudo rm -rf ~/.Trash/*
+fi
 
 # Rebuild Launch Services Database
 echo "🚀 Rebuilding Launch Services..."
@@ -271,7 +334,9 @@ echo "💽 Verifying Disk Health..."
 # cannot properly repair a mounted system volume, and its output is
 # the only record I get. I leave it here as a known weak point in
 # the script, not as a step I would recommend.
-sudo fsck -fy
+if confirm_step "Run fsck -fy on the live disk this script is running from"; then
+    sudo fsck -fy
+fi
 
 # Update locate database
 echo "🔄 Updating Locate Database..."
@@ -288,9 +353,11 @@ if command -v brew >/dev/null 2>&1; then
 fi
 
 # Clear system caches
-sudo rm -rf /Library/Caches/*
-sudo rm -rf /System/Library/Caches/*
-sudo rm -rf ~/Library/Caches/*
+if confirm_step "Delete system caches under Library, System Library, and your home folder"; then
+    sudo rm -rf /Library/Caches/*
+    sudo rm -rf /System/Library/Caches/*
+    sudo rm -rf ~/Library/Caches/*
+fi
 
 # Clear DNS cache
 sudo dscacheutil -flushcache
