@@ -3,179 +3,305 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MacOS-Performance-Tweaks: Field Manual</title>
+<title>MacOS-Performance-Tweaks: The Warning Placard</title>
 <!-- pages-campaign site for Epsilon0xCell/MacOS-Performance-Tweaks; source of truth: MacOS-Performance-Tweaks-Website/ on the default branch -->
 <style>
-  /* I set this page as a field manual broadside: one wide column, big
-     margins, numbered entries, serif type. A manual does not decorate.
-     The warning goes at the top where a manual puts its warnings, in
-     the largest type on the page after the title. */
+  /* I set this one as an industrial warning placard, because that is
+     what the script honestly is: a posted notice in front of a
+     machine you should not switch on. Heavy grotesque type, black
+     rules, one safety red, and the hazard stripe kept to the edges
+     where a placard puts it. No serif, no softness. */
   * { box-sizing: border-box; }
-  body { margin: 0; background: #e8e2d2; color: #26241e; font-family: Georgia, "Times New Roman", serif; }
-  .page { max-width: 860px; margin: 0 auto; background: #f8f4e7; padding: 54px 72px 70px; border-left: 1px solid #b9b09a; border-right: 1px solid #b9b09a; }
-  @media (max-width: 700px) { .page { padding: 36px 24px 54px; } }
-  .manual-no { text-align: center; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; margin: 0 0 10px; }
-  h1 { text-align: center; font-size: 36px; margin: 0 0 8px; line-height: 1.2; }
-  .subtitle { text-align: center; font-style: italic; font-size: 17px; margin: 0 0 22px; }
-  .rule { border: none; border-top: 3px solid #26241e; margin: 18px 0; }
-  .rule.thin { border-top-width: 1px; }
-  .banner { width: 100%; height: auto; display: block; border: 2px solid #26241e; }
-  .badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 16px 0 4px; }
-  .badges img { height: 20px; }
-  .warning { border: 3px solid #8e2318; color: #8e2318; padding: 20px 24px; margin: 28px 0; }
-  .warning h2 { margin: 0 0 8px; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; border: none; text-align: left; }
-  .warning p { margin: 0; color: #5c1710; }
-  h2 { font-size: 15px; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin: 44px 0 18px; }
-  p { font-size: 16.5px; line-height: 1.75; }
-  .entry { display: grid; grid-template-columns: 64px 1fr; gap: 16px; margin: 0 0 20px; }
-  .entry .no { font-size: 24px; font-weight: bold; border-top: 2px solid #26241e; padding-top: 4px; }
-  .entry h3 { margin: 4px 0 5px; font-size: 17.5px; }
-  .entry p { margin: 0; font-size: 15.5px; line-height: 1.65; }
-  code { font-family: "Courier New", monospace; font-size: 0.92em; background: #ece5cf; padding: 0 4px; }
-  pre { background: #26241e; color: #f2ecd9; padding: 15px 18px; font-size: 14px; line-height: 1.6; overflow-x: auto; }
-  pre code { background: none; padding: 0; color: inherit; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-  .chip { border: 1.5px solid #26241e; padding: 4px 11px; font-size: 13px; font-family: "Courier New", monospace; }
-  a { color: #8e2318; }
-  footer { text-align: center; font-size: 13.5px; margin-top: 50px; }
-  footer p { font-size: 13.5px; }
+  body { margin: 0; background: #ddd6c2; color: #1d1b16; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .sheet { max-width: 1060px; margin: 0 auto; background: #f5f1e3; padding: 0 0 64px; border-left: 2px solid #1d1b16; border-right: 2px solid #1d1b16; }
+  .stripe { height: 14px; background: repeating-linear-gradient(45deg, #1d1b16 0 18px, #d9a514 18px 36px); }
+  .mast { display: flex; gap: 20px; align-items: center; padding: 30px 40px 6px; }
+  @media (max-width: 700px) { .mast { padding: 24px 20px 6px; } .cols { padding: 0 20px; } }
+  .mast img.logo { width: 72px; height: 72px; flex: 0 0 72px; border: 2px solid #1d1b16; }
+  .kicker { font-size: 12px; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; margin: 0 0 6px; }
+  h1 { font-size: 34px; line-height: 1.12; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .mast .file { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13.5px; margin-top: 8px; color: #4c4636; }
+  img.banner { width: calc(100% - 80px); margin: 18px 40px 0; height: auto; display: block; border: 2px solid #1d1b16; }
+  @media (max-width: 700px) { img.banner { width: calc(100% - 40px); margin: 14px 20px 0; } }
+  .badges { padding: 14px 40px 0; }
+  @media (max-width: 700px) { .badges { padding: 14px 20px 0; } }
+  .badges img { height: 20px; margin: 0 6px 6px 0; vertical-align: middle; }
+  /* The warning is the largest type on the page after the title and
+     it sits before everything else, the way the script's own header
+     comment sits before its first command. */
+  .warning { margin: 26px 40px 0; border: 3px solid #a01c12; background: #fdf6ec; }
+  @media (max-width: 700px) { .warning { margin: 22px 20px 0; } }
+  .warning .stripe { height: 10px; background: repeating-linear-gradient(45deg, #a01c12 0 16px, #f5f1e3 16px 32px); }
+  .warning .body { padding: 20px 26px 8px; }
+  .warning h2 { color: #a01c12; font-size: 26px; text-transform: uppercase; margin: 0 0 10px; letter-spacing: 0.5px; }
+  .warning p { font-size: 16.5px; line-height: 1.6; margin: 0 0 12px; max-width: 72ch; }
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 34px; padding: 0 40px; margin-top: 10px; }
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+  .entry { margin-top: 38px; }
+  .entry .no { font-size: 13px; font-weight: 700; letter-spacing: 3px; color: #a01c12; text-transform: uppercase; margin: 0 0 6px; }
+  .entry h2, .rail h2 { font-size: 21px; margin: 0 0 12px; line-height: 1.25; }
+  .entry p { line-height: 1.65; font-size: 16px; margin: 0 0 13px; max-width: 66ch; }
+  a { color: #7c150c; }
+  figure.cap { margin: 14px 0 20px; border: 2px solid #1d1b16; background: #fffdf4; }
+  figure.cap figcaption { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; background: #1d1b16; color: #f5f1e3; padding: 8px 13px; line-height: 1.5; }
+  figure.cap pre { margin: 0; padding: 13px 15px; overflow-x: auto; font-size: 12.8px; line-height: 1.55; font-family: ui-monospace, Menlo, Consolas, monospace; color: #1d1b16; }
+  .rail { margin-top: 38px; }
+  .rail .box { border: 2px solid #1d1b16; padding: 16px 18px 6px; margin-bottom: 22px; background: #fdfaf0; }
+  .rail .box h2 { font-size: 15px; letter-spacing: 2px; text-transform: uppercase; }
+  .rail ol, .rail ul { margin: 0 0 12px; padding-left: 20px; line-height: 1.55; font-size: 14.5px; }
+  .rail li { margin-bottom: 8px; }
+  .rail .nums { font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .rail .nums div { display: flex; justify-content: space-between; border-bottom: 1px solid #c9c0a2; padding: 7px 0; font-size: 14px; }
+  .rail .nums div:last-child { border-bottom: none; }
+  .rail .nums b { font-size: 17px; }
+  .plates { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .plates { grid-template-columns: 1fr; } }
+  .plates figure { margin: 0; border: 2px solid #1d1b16; background: #fffdf4; }
+  .plates img { width: 100%; height: auto; display: block; }
+  .plates figcaption { font-size: 13px; padding: 8px 11px; line-height: 1.5; border-top: 1px solid #c9c0a2; }
+  footer { margin: 52px 40px 0; border-top: 2px solid #1d1b16; padding-top: 16px; font-size: 13.5px; line-height: 1.7; color: #4c4636; }
+  @media (max-width: 700px) { footer { margin: 44px 20px 0; } }
+  /* Entries surface once, in reading order, when the script is
+     allowed to run. The gates list in the rail does not perform; a
+     checklist should sit still and be read. */
+  .js .reveal { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .js .reveal.on { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+  }
 </style>
 </head>
 <body>
-<div class="page">
+<div class="sheet">
+  <div class="stripe"></div>
 
-  <p class="manual-no">Field manual / one script / 309 lines / read before touching</p>
-  <h1>MacOS-Performance-Tweaks</h1>
-  <p class="subtitle">Performance tweaks for macOS, in <code>boost_macos_performance.sh</code>.</p>
-  <img class="banner" src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/banner.png" alt="MacOS-Performance-Tweaks banner">
-  <div class="badges">
-    <img src="https://img.shields.io/github/stars/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Stars">
-    <img src="https://img.shields.io/github/forks/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Forks">
-    <img src="https://img.shields.io/github/last-commit/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Last commit">
-    <img src="https://img.shields.io/github/languages/top/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Top language">
-    <img src="https://img.shields.io/github/repo-size/Epsilon0xCell/MacOS-Performance-Tweaks" alt="Repo size">
-    <img src="https://img.shields.io/github/license/Epsilon0xCell/MacOS-Performance-Tweaks" alt="License">
+  <div class="mast">
+    <img class="logo" src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/logo.png" alt="MacOS-Performance-Tweaks logo">
+    <div>
+      <p class="kicker">Posted notice &middot; Research draft &middot; Not a tool I recommend</p>
+      <h1>MacOS-Performance-Tweaks</h1>
+      <p class="file">boost_macos_performance.sh &middot; 376 lines &middot; one file does everything</p>
+    </div>
   </div>
+  <img class="banner" src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/banner.png" alt="MacOS-Performance-Tweaks banner">
+  <p class="badges">
+    <img src="https://img.shields.io/github/stars/Epsilon0xCell/MacOS-Performance-Tweaks?style=flat-square&labelColor=1d1b16&color=a01c12" alt="GitHub stars">
+    <img src="https://img.shields.io/github/forks/Epsilon0xCell/MacOS-Performance-Tweaks?style=flat-square&labelColor=1d1b16&color=a01c12" alt="GitHub forks">
+    <img src="https://img.shields.io/github/last-commit/Epsilon0xCell/MacOS-Performance-Tweaks?style=flat-square&labelColor=1d1b16&color=a01c12" alt="Last commit">
+    <img src="https://img.shields.io/github/languages/top/Epsilon0xCell/MacOS-Performance-Tweaks?style=flat-square&labelColor=1d1b16&color=a01c12" alt="Top language">
+    <img src="https://img.shields.io/github/repo-size/Epsilon0xCell/MacOS-Performance-Tweaks?style=flat-square&labelColor=1d1b16&color=a01c12" alt="Repository size">
+    <img src="https://img.shields.io/github/license/Epsilon0xCell/MacOS-Performance-Tweaks?style=flat-square&labelColor=1d1b16&color=a01c12" alt="License, GPL-3.0">
+  </p>
 
   <div class="warning">
-    <h2>Warning: do not run this script as written</h2>
-    <!-- This box is my own warning from the README, kept first and kept
-         loud. A manual that buries this under the entries would be lying
-         about what kind of document it is. -->
-    <p>My own warning stands, and this page keeps it first: do not use this script. It will most likely break your system, and further research is needed before any part of it is trusted. It deletes logs, caches, and trash contents, disables Time Machine local snapshots, runs <code>fsck -fy</code> on the live disk, changes boot arguments and kernel limits, rewrites DNS servers and network settings, and rebuilds indexes. It is preserved here as a research draft, not as a tool I recommend. Nothing in the improvement passes makes it safe to run, and this manual is a description of the script, not an invitation.</p>
+    <div class="stripe"></div>
+    <div class="body">
+      <h2>Do not run this script as written</h2>
+      <p>That is my own warning, it stands at the top of the script and the top of the README, and this page keeps it where it belongs: first. The script deletes logs, caches, and the contents of the Trash, deletes local Time Machine snapshots and then turns Time Machine off, runs fsck -fy on the live disk it is running from, changes boot arguments and kernel limits, rewrites DNS servers, and rebuilds indexes. It will most likely break your system. It is kept here as a research draft, a record of what I wrote and what I later found wrong with it, not as something to use.</p>
+      <p>Nothing on this page runs it. This page documents it, the way you would document a machine behind glass.</p>
+    </div>
   </div>
 
-  <h2>What this is</h2>
-  <p>I collected every macOS tuning command I had gathered into one bash script, section by section, each section announcing itself with an echo line as it runs. Read as a list of settings, it is a fair record of what people tweak: Dock timing, Finder animations, Safari delays, hibernation, kernel limits, DNS. Read as a program, it is a draft with no brakes. There is no <code>set -e</code> and almost no command checks its result, so a failure halfway down does not stop the deletions near the end. The output is a log of attempts, not a record of what took effect.</p>
-  <p>I keep the repo because the list itself is useful to study and because the fixes the campaign made to it are worth showing. But the honest summary is the warning above. If a single entry below interests you, the entry is a starting point for your own research on that one setting, never a reason to run the whole file.</p>
+  <div class="cols">
+    <main>
+      <div class="entry reveal">
+        <p class="no">Entry 01</p>
+        <h2>The warning at the top of the file</h2>
+        <p>The script opens with its own placard, written into the header comment before the first command. This is that header, verbatim, lines 3 to 23 of the file:</p>
+        <figure class="cap">
+          <figcaption>boost_macos_performance.sh, lines 3 to 23: the header warning</figcaption>
+          <pre># WARNING: READ THIS BEFORE YOU RUN ANYTHING IN THIS FILE
+#
+# This script does things that cannot be undone. Each item below
+# now stops and asks you to type YES for that step before it runs.
+# If you type anything else, or press Enter, that step is skipped.
+# Typing YES once does not carry over to the next step.
+#
+# The steps that ask are:
+# - Turning off the LaunchServices quarantine prompt for
+#   downloaded apps. With that prompt off, macOS no longer asks
+#   before you open an app you downloaded.
+# - Deleting local Time Machine snapshots. Those snapshots are
+#   gone for good once deleted.
+# - Turning Time Machine off, including local snapshots. After
+#   that step there is no local backup left on this machine.
+# - Deleting files with no list kept and no move to the Trash:
+#   the sleep image, language and speech data, system logs, user
+#   logs, temporary files, caches, font caches, and the contents
+#   of the Trash itself. Deleted means deleted.
+# - Running fsck -fy on the live disk this script is running
+#   from. That check runs against a mounted system disk.</pre>
+        </figure>
+      </div>
 
-  <hr class="rule">
-  <h2>The entries, in the order the script runs them</h2>
+      <div class="entry reveal">
+        <p class="no">Entry 02</p>
+        <h2>The gate: every destructive step asks, by name</h2>
+        <p>The fix this file needed most was not speed. It was a pause. Ten steps in the script cannot be undone, and each one now stops and asks the person at the keyboard to type YES, in full, for that one step. Any other answer skips the step. Typing YES once approves nothing later; the question is asked again at every gate. The prompt reads from /dev/tty on purpose, so a piped or unattended run has no keyboard to answer with, and every gated step is skipped by default. Here is the whole mechanism, lines 44 to 61:</p>
+        <figure class="cap">
+          <figcaption>boost_macos_performance.sh, lines 44 to 61: confirm_step, the typed YES gate</figcaption>
+          <pre># I gate every step listed in the warning at the top behind this
+# prompt. The person running the script has to type YES, in full,
+# for that one step. Any other answer skips the step. I read from
+# /dev/tty so a piped or unattended run cannot answer by accident:
+# with no terminal to type at, every gated step is skipped.
+confirm_step() {
+    step_name="$1"
+    echo ""
+    echo "Next step: $step_name"
+    echo "This step cannot be undone."
+    printf "Type YES to run this step, or press Enter to skip it: "
+    read -r confirm_reply &lt; /dev/tty || confirm_reply=""
+    if [ "$confirm_reply" = "YES" ]; then
+        return 0
+    fi
+    echo "Skipped: $step_name"
+    return 1
+}</pre>
+        </figure>
+        <p>Before any gate is reached, the script checks it is running as root and leaves if it is not. That check used to print its message and exit 0, a success code for a refusal. It exits 1 now:</p>
+        <figure class="cap">
+          <figcaption>boost_macos_performance.sh, lines 34 to 42: the root check</figcaption>
+          <pre># I check for root first, before anything is written, and I keep the
+# sudo prefixes on later lines anyway so a single line can still be
+# copied into a normal terminal on its own. Every section below
+# assumes it can write system preferences and delete system files.
+# Check if running with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root (using sudo)"
+    exit 1
+fi</pre>
+        </figure>
+      </div>
 
-  <div class="entry"><div class="no">01</div><div>
-    <h3>The root gate</h3>
-    <p>The script checks <code>$EUID</code> first and refuses to continue without root, printing "Please run as root (using sudo)". In Wave 5 I fixed what that refusal returned: it used to exit with status 0, so a refused run looked successful. It exits 1 now.</p>
-  </div></div>
+      <div class="entry reveal">
+        <p class="no">Entry 03</p>
+        <h2>Two gates, shown where they stand in the file</h2>
+        <p>The Time Machine gate comes near the end, after the snapshots near the top were already deleted at their own gate. I disable Time Machine outright in this section instead of only trimming it, and after it there is no local backup left to fall back on if one of the tweaks above turns out to be a mistake. Lines 301 to 309:</p>
+        <figure class="cap">
+          <figcaption>boost_macos_performance.sh, lines 301 to 309: the Time Machine gate</figcaption>
+          <pre># I disable Time Machine outright instead of only trimming it, and I
+# already deleted its local snapshots near the top. After this
+# section there is no local backup left to fall back on if one of
+# the tweaks above turns out to be a mistake.
+echo "⏰ Optimizing Time Machine..."
+if confirm_step "Turn Time Machine off and turn local snapshots off"; then
+    sudo tmutil disable
+    sudo tmutil disablelocal
+fi</pre>
+        </figure>
+        <p>The last gate is the disk check. fsck -fy cannot properly repair a mounted system volume, and its output is the only record the run leaves. I keep the step in the file as a known weak point, behind its gate, not as a step I would recommend. Lines 333 to 339:</p>
+        <figure class="cap">
+          <figcaption>boost_macos_performance.sh, lines 333 to 339: the fsck gate</figcaption>
+          <pre># I run fsck -fy on the live disk this script is running from. It
+# cannot properly repair a mounted system volume, and its output is
+# the only record I get. I leave it here as a known weak point in
+# the script, not as a step I would recommend.
+if confirm_step "Run fsck -fy on the live disk this script is running from"; then
+    sudo fsck -fy
+fi</pre>
+        </figure>
+      </div>
 
-  <div class="entry"><div class="no">02</div><div>
-    <h3>System animations and UI</h3>
-    <p>Window, Dock, and Mission Control animation timing, Dock autohide delay, Dashboard off, CrashReporter dialog set to none, smart quotes and smart dashes off, and automatic restart on freeze. This section also turns off the "Are you sure you want to open this application?" dialog (<code>LSQuarantine</code> false). That prompt is a real safety check on downloaded apps, not decoration, and trading it away is one reason the warning sits at the top of this page.</p>
-  </div></div>
+      <div class="entry reveal">
+        <p class="no">Entry 04</p>
+        <h2>One line that used to do the opposite of its heading</h2>
+        <p>Under the System Integrity heading, this script used to run spctl --master-disable, which turns Gatekeeper off, in a section claiming to check integrity. That turned a protection off while claiming to add one. The line runs --master-enable now, and the comment beside it says why, in the file:</p>
+        <figure class="cap">
+          <figcaption>boost_macos_performance.sh, lines 213 to 216: Gatekeeper kept on</figcaption>
+          <pre># I keep Gatekeeper enabled. An earlier version of this script disabled
+# it on this spot, under a security heading, which turned a protection
+# off while claiming to add one.
+sudo spctl --master-enable</pre>
+        </figure>
+      </div>
 
-  <div class="entry"><div class="no">03</div><div>
-    <h3>Finder</h3>
-    <p>Finder animations off, POSIX path shown in the title, list view as the preferred style, and the extension-change and empty-trash warnings off.</p>
-  </div></div>
+      <div class="entry reveal">
+        <p class="no">Entry 05</p>
+        <h2>What the rest of it does, ungated</h2>
+        <p>The gates cover the steps that delete or disable. They do not make the rest of the script safe, and this page will not pretend otherwise. The ungated sections write Finder, Dock, Mission Control, and Safari settings (36 defaults write lines in all), set power and hibernation options, purge memory, vacuum the Mail and Photos databases in place, hardcode DNS to 1.1.1.1, 1.0.0.1, 8.8.8.8, and 8.8.4.4 on the Wi-Fi service, turn IPv6 off on Wi-Fi while setting a 9000 MTU on en0, raise kernel limits with no read-back afterwards, rebuild the Spotlight index, and restart Finder and Dock. The script has no error handling: no set -e, and almost no command checks its result, so a failure halfway down does not stop the deletions near the end. Its output is a log of attempts, not a record of what took effect.</p>
+        <p>The cleanup pass also removed duplicate settings that had crept in over edits: a second expose-animation-duration, a second autohide-delay, a second NSWindowResizeTime, a plain debug menu line superseded by its -bool true form, and a second mDNSResponder restart. Commands that are leftovers from older macOS releases, like repair_packages and repairPermissions, are left exactly as written and covered by the warning, not silently rewritten into something I have not tested either.</p>
+      </div>
 
-  <div class="entry"><div class="no">04</div><div>
-    <h3>Safari</h3>
-    <p>Three WebKit layout delay values set to 0.25. Later sections add Safari debug settings: the internal debug menu and developer extras, under the security entries.</p>
-  </div></div>
+      <div class="entry reveal">
+        <p class="no">Entry 06</p>
+        <h2>How this file was checked</h2>
+        <p>bash -n, a syntax pass, before and after the gating fix. That is all. The script was not run live, by design: running it would change a real Mac's settings and delete real files, and no screenshot or output capture on this page pretends otherwise. Every code panel here is a reading of the file as it stands, checked line by line against it.</p>
+        <p><a href="https://github.com/Epsilon0xCell/MacOS-Performance-Tweaks">The repository</a> &middot; <a href="https://github.com/Epsilon0xCell">My profile</a></p>
+      </div>
 
-  <div class="entry"><div class="no">05</div><div>
-    <h3>Memory and power</h3>
-    <p><code>purge</code>, the daily, weekly, and monthly periodic jobs, then <code>pmset</code> changes: hibernation mode 0, sudden motion sensor off, Power Nap off, proximity wake off, and TCP keepalive off.</p>
-  </div></div>
+      <div class="entry reveal">
+        <p class="no">Entry 07</p>
+        <h2>The drawings</h2>
+        <p>Six hand-drawn sheets live in the repo's Visuals folder, counted from the files themselves. The folder's VISUAL.md describes five; the schematic is the sixth, drawn later, and it is posted here with the rest.</p>
+        <div class="plates">
+          <figure><img src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/MacOS-Performance-Tweaks-Visuals/architecture.png" alt="Architecture sheet for MacOS-Performance-Tweaks"><figcaption>The put-together: the script at the top, its sections under it.</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/MacOS-Performance-Tweaks-Visuals/flowchart.png" alt="Flowchart sheet for MacOS-Performance-Tweaks"><figcaption>The run, top of the file to the last restart.</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/MacOS-Performance-Tweaks-Visuals/product-map.png" alt="Product map sheet for MacOS-Performance-Tweaks"><figcaption>What it is for, what goes in, what comes out, and where it stops.</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/MacOS-Performance-Tweaks-Visuals/data-flow.png" alt="Data flow sheet for MacOS-Performance-Tweaks"><figcaption>The data path in one direction, file to result.</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/MacOS-Performance-Tweaks-Visuals/statistics.png" alt="Statistics sheet for MacOS-Performance-Tweaks"><figcaption>The counts, drawn as bars you can check against the repo.</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/Epsilon0xCell/MacOS-Performance-Tweaks/main/MacOS-Performance-Tweaks-Visuals/schematic.png" alt="Schematic sheet for MacOS-Performance-Tweaks"><figcaption>The schematic, the sheet VISUAL.md does not list. No drawing sits over a binder hole on any sheet, by rule and by machine check.</figcaption></figure>
+        </div>
+      </div>
+    </main>
 
-  <div class="entry"><div class="no">06</div><div>
-    <h3>CPU, GPU, and the first boot-args write</h3>
-    <p>An <code>nvram</code> write adding <code>npci=0x2000</code> to boot-args, and two timer coalescing sysctls set to 0. A boot-args write replaces the whole string, so this line re-reads the current value and carries it forward. That re-read pattern matters again at entry 11.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">07</div><div>
-    <h3>Disk and Time Machine snapshots</h3>
-    <p>An APFS defragment status probe per volume, gated on FileVault's <code>fdesetup</code> answering at all, then <code>tmutil deletelocalsnapshots /</code> and <code>diskutil repairVolume /</code>. The local snapshots go here, near the top, long before entry 14 turns Time Machine off outright.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">08</div><div>
-    <h3>Mail and Photos databases</h3>
-    <p>SQLite vacuums run in place: the Mail envelope index (found through a <code>V*</code> path glob that a macOS update can move) and every <code>.db</code> under the Photos library. If Mail or Photos is running and holds the database locked, the vacuum fails and, with no error handling, nobody sees it.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">09</div><div>
-    <h3>Network, first pass</h3>
-    <p>TCP delayed ack off, larger receive and send spaces, and DNS hardcoded to 1.1.1.1, 1.0.0.1, 8.8.8.8, and 8.8.4.4 on the service named "Wi-Fi". On a Mac where that service is named differently, or that is on Ethernet, this fails quietly.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">10</div><div>
-    <h3>System integrity, and the Gatekeeper entry</h3>
-    <p>This is the safety entry of this manual, so I will state it exactly. Under the system integrity section the script runs <code>sudo spctl --master-enable</code>: Gatekeeper is switched on, not off. An earlier version of this script ran <code>spctl --master-disable</code> under a security heading, turning a protection off while claiming to add one. Wave 5 reversed that line, and the script's own final line then asks for a restart so the changes take effect: "Please restart your Mac for all changes to take effect." Protection is re-enabled and left enabled; nothing in the current script turns it off. The same section runs the leftover <code>repair_packages</code> verify, a command from older macOS releases that is gone or refuses on a current system, and prints the SIP status with <code>csrutil status</code>.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">11</div><div>
-    <h3>Deep cleanup, logs, and caches</h3>
-    <p>The point of no return in this script: the sleep image, language and speech data, suggestions, Quick Look support files, and help caches are deleted with no trash, no confirmation, and no list kept. Log files under Application Support and Containers follow. Later sections delete system logs, temporary files, and all of <code>~/Library/Caches</code>, more than once.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">12</div><div>
-    <h3>Menu bar and the security settings section</h3>
-    <p>The menu extras list is set to Bluetooth, Volume, Battery, and Clock. The section headed "Security Optimizations" writes two <code>com.apple.security</code> values, <code>GKAutoRearm</code> false and <code>RSAMaxKeySize</code> 8192, next to the Safari debug settings. I list what the section contains; the heading is the script's, and entry 10 is where the Gatekeeper fact lives.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">13</div><div>
-    <h3>Kernel limits and the second boot-args write</h3>
-    <p>A second <code>nvram</code> write adds <code>serverperfmode=1</code>, and its re-read of the current boot-args is the only reason the <code>npci=0x2000</code> flag from entry 06 survives; a fresh literal string here would silently drop it. Kernel limits follow: <code>kern.maxvnodes</code> 750000, <code>kern.maxproc</code> 2500, <code>kern.maxfiles</code>, and a launchctl file limit. None of these values is read back afterwards, so a rejected limit and an applied one look identical in the output.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">14</div><div>
-    <h3>Indexes, permissions, Time Machine off, trash, disk check</h3>
-    <p>Spotlight is rebuilt with <code>mdutil -E /</code>, disk permissions are repaired with a command modern macOS has retired, font caches are cleared, and Time Machine is disabled with <code>tmutil disable</code> and <code>disablelocal</code>. After this entry there is no local backup left to fall back on if a tweak above was a mistake. The trash is emptied with <code>rm</code>, Launch Services is rebuilt, the locate database is updated, and the script runs <code>fsck -fy</code> on the live disk.</p>
-  </div></div>
-
-  <div class="entry"><div class="no">15</div><div>
-    <h3>Network, second pass, and service restarts</h3>
-    <p>IPv6 is switched off on Wi-Fi while the MTU is set to 9000 on <code>en0</code>, which on a desktop Mac is usually Ethernet, not the same interface. A 9000 MTU only helps if the rest of the local network takes jumbo frames; if it does not, large transfers can stall instead of speeding up. The script ends by flushing the DNS cache, restarting Finder and the Dock, and printing the restart request quoted in entry 10.</p>
-  </div></div>
-
-  <hr class="rule thin">
-  <h2>Corrections on record</h2>
-  <p>Three fixes from Wave 5, all checkable in the current file. The non-root refusal now exits 1 instead of 0 (entry 01). Duplicated settings were removed: the second <code>expose-animation-duration</code>, the second <code>autohide-delay</code>, the second <code>NSWindowResizeTime</code>, the plain <code>IncludeInternalDebugMenu 1</code> (the later <code>-bool true</code> form is kept), and the second <code>killall -HUP mDNSResponder</code> in the cleanup block. And the Gatekeeper line was reversed from disable to enable (entry 10). Other destructive or obsolete commands, <code>repair_packages</code>, <code>repairPermissions</code>, and <code>fsck -fy</code> among them, were left exactly as written and are covered by the warning rather than silently rewritten into a different script.</p>
-
-  <h2>How this script was checked</h2>
-  <!-- The only command I show on this page is the syntax check, because
-       it is the only command anyone involved actually ran. Putting the
-       script's own invocation here would read as instructions, and the
-       warning above says the opposite. -->
-  <pre><code>$ bash -n boost_macos_performance.sh
-(no output: syntax OK)</code></pre>
-  <p>That is the whole verification: <code>bash -n</code>, before and after the fixes, plus reading. The script was not run live in any pass, by design, because running it changes a real Mac's settings and deletes files, and the staging machine is Linux in any case. I did not execute it for this page either.</p>
-
-  <div class="chips">
-    <span class="chip">Bash</span>
-    <span class="chip">macOS defaults</span>
-    <span class="chip">pmset</span>
-    <span class="chip">nvram boot-args</span>
-    <span class="chip">spctl (Gatekeeper)</span>
-    <span class="chip">diskutil / tmutil</span>
+    <aside class="rail">
+      <div class="box reveal">
+        <h2>The ten gates</h2>
+        <p style="font-size:14.5px; line-height:1.55;">Each of these steps stops and asks for a typed YES for that step alone, in this order:</p>
+        <ol>
+          <li>Turn off the LaunchServices quarantine prompt for downloaded apps</li>
+          <li>Delete local Time Machine snapshots</li>
+          <li>Delete the sleep image, language and speech data, suggestions, Quick Look data, help caches, and log files under Application Support and Containers</li>
+          <li>Delete all system logs and user logs</li>
+          <li>Delete temporary files and all user caches</li>
+          <li>Clear font caches and delete the font cache folders</li>
+          <li>Turn Time Machine off and turn local snapshots off</li>
+          <li>Empty the Trash and delete its contents for good</li>
+          <li>Run fsck -fy on the live disk this script is running from</li>
+          <li>Delete system caches under Library, System Library, and your home folder</li>
+        </ol>
+      </div>
+      <div class="box reveal">
+        <h2>The file in numbers</h2>
+        <div class="nums">
+          <div><span>lines in the script</span><b>376</b></div>
+          <div><span>typed YES gates</span><b>10</b></div>
+          <div><span>defaults write lines</span><b>36</b></div>
+          <div><span>rm -rf lines</span><b>19</b></div>
+          <div><span>live runs by me</span><b>0</b></div>
+        </div>
+        <p style="font-size:13.5px; line-height:1.55; margin-top:10px;">Counted from the file as it stands on 2026-10-31. The zero is deliberate and it stays.</p>
+      </div>
+      <div class="box reveal">
+        <h2>Kept, not hidden</h2>
+        <p style="font-size:14.5px; line-height:1.55;">Plenty of repos would quietly delete a file like this. I kept it, gated it, and posted the warning at reading size, because the honest record of a bad draft teaches more than a clean shelf. The README carries the same warning in the same order: read it there before you read the code.</p>
+      </div>
+    </aside>
   </div>
-  <p style="text-align:center">Source: <a href="https://github.com/Epsilon0xCell/MacOS-Performance-Tweaks">github.com/Epsilon0xCell/MacOS-Performance-Tweaks</a> / Profile: <a href="https://github.com/Epsilon0xCell">github.com/Epsilon0xCell</a></p>
 
-  <hr class="rule">
   <footer>
-    <p>Built by Epsilon0xCell</p>
-    <p>Manual set in Georgia with wide margins, the way the script should have been written: slowly, and with the warning first.</p>
+    <p>Built by Epsilon0xCell. The script is GPL-3.0 licensed. This page is documentation only; it runs nothing.</p>
+    <p>Last updated 2026-10-31. Every code panel on this page was checked line by line against boost_macos_performance.sh as it stands now.</p>
   </footer>
 
+  <div class="stripe"></div>
 </div>
+<script>
+  // The only motion here is entries surfacing once as you read down
+  // the placard. The rail stays still on purpose. If your system
+  // asks for reduced motion, this script does nothing and the CSS
+  // leaves every entry in its final state.
+  (function () {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
+    document.documentElement.classList.add("js");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  })();
+</script>
 </body>
 </html>
