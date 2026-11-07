@@ -1,13 +1,15 @@
-![Introduction banner](intro-banner.png)
+![Introduction banner: a dragster at the far end of the strip with its red parachute blooming open behind it, flame still at the headers and smoke curling over the asphalt under sodium track light](intro-banner.png)
 
 
 # MacOS-Performance-Tweaks
 
-![Wordmark banner](banner.png)
+<p align="center"><img src="logo.png" alt="MacOS-Performance-Tweaks logo: the black silhouette of a drag car held sharp against orange and red speed streaks, its parachute pack riding at the rear above the wheelie bar" width="200"></p>
+
+![Wordmark banner: a black drag car launching down the strip with flame orange fire pouring from its headers, the red staging lights it has already passed standing behind it, the world blurred sideways](banner.png)
 
 ![Scene](scene.svg)
 
-> **Vestry notice, placed first by design:** this script deletes local Time Machine snapshots, turns Time Machine off, and clears caches, logs, and the sleep image, irreversibly. Read the warnings in this README before any instruction to run anything.
+> **Staging notice, placed first by design:** this script deletes local Time Machine snapshots, turns Time Machine off, and clears caches, logs, and the sleep image, irreversibly. Read the warnings in this README before any instruction to run anything.
 
 Performance tweaks for macOS, in `boost_macos_performance.sh`.
 

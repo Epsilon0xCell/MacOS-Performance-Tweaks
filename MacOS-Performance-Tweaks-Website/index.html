@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MacOS-Performance-Tweaks: The Order of Service</title><style>
-@font-face{font-family:SpecialElite;src:url(fonts/SpecialElite-Regular.ttf)}
-@font-face{font-family:Bitter;src:url(fonts/Bitter.ttf)}
-*{box-sizing:border-box}body{margin:0;background:#17140f;color:#2b2519;font-family:Bitter,Georgia,serif}
+<title>MacOS-Performance-Tweaks: The Quarter Mile</title><style>
+@font-face{font-family:'Faster One';src:url('fonts/FasterOne-Regular.ttf') format('truetype')}
+@font-face{font-family:'Rajdhani';src:url('fonts/Rajdhani-Regular.ttf') format('truetype');font-weight:400}
+@font-face{font-family:'Rajdhani';src:url('fonts/Rajdhani-Bold.ttf') format('truetype');font-weight:700}
+*{box-sizing:border-box}body{margin:0;background:#0d0c0e;color:#2b2519;font-family:'Rajdhani',sans-serif;font-size:1.06rem;line-height:1.55}
 .service{max-width:760px;margin:0 auto;padding:30px 20px 60px}
-.vestry{background:#efe8d0;border:4px solid #8a2c2c;padding:20px 26px;margin:0 0 26px;box-shadow:0 0 0 6px #241f1a}
-.vestry h2{font-family:SpecialElite,monospace;color:#8a2c2c;margin-top:0}
-header{text-align:center}header img{width:100%;border:3px solid #54432c}
-h1{font-family:SpecialElite,monospace;color:#efe8d0;font-size:2.1rem;line-height:1.25}
-.lede{color:#cfc4a6}
+.vestry{background:#f5efe2;border:4px solid #c1271f;padding:20px 26px;margin:0 0 26px;box-shadow:0 0 0 6px #1c1a1e}
+.vestry h2{font-family:'Faster One',sans-serif;font-weight:400;color:#c1271f;margin-top:0;font-size:1.3rem;letter-spacing:.02em}
+header{text-align:center}header img{width:100%;border:3px solid #e86a1e}
+h1{font-family:'Faster One',sans-serif;font-weight:400;color:#f5efe2;font-size:2rem;line-height:1.25}
+.lede{color:#d8cfba}
 nav{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:20px 0}
-a.knob{display:inline-flex;flex-direction:column;align-items:center;gap:6px;color:#efe8d0;text-decoration:none;font-family:SpecialElite,monospace;font-size:0.85rem}
-a.knob i{display:block;width:44px;height:44px;border-radius:50%;background:#efe8d0;border:3px solid #54432c;box-shadow:inset 0 -6px 0 #cfc4a6}
-a.knob:hover i{transform:translateX(3px)}
-a.knob:active i{transform:translateX(7px);background:#fff6da}
-a.knob.red i{border-color:#8a2c2c}
-.page{background:#f2ecd9;border-top:3px solid #54432c;padding:20px 30px;margin:24px 0;position:relative}
-.page h2{font-family:SpecialElite,monospace;font-size:1.35rem}
-.page h2::before{content:"";display:inline-block;width:17px;height:17px;border-radius:50%;background:#efe8d0;border:2px solid #54432c;margin-right:10px;vertical-align:-2px}
-ul{line-height:1.65}code,pre{font-family:ui-monospace,Menlo,monospace}pre{background:#241f1a;color:#efe8d0;padding:14px;overflow:auto}
+a.knob{display:inline-flex;flex-direction:column;align-items:center;gap:6px;color:#f5efe2;text-decoration:none;font-weight:700;font-size:0.9rem;letter-spacing:.08em;text-transform:uppercase}
+a.knob i{display:block;width:44px;height:44px;border-radius:50%;background:#2a272c;border:3px solid #e86a1e;box-shadow:inset 0 -8px 0 #17151a}
+a.knob:hover i{background:#e86a1e}
+a.knob:active i{background:#ffb347}
+a.knob.red i{border-color:#c1271f}
+a.knob.red:hover i{background:#c1271f}
+.page{background:#f5efe2;border-top:3px solid #e86a1e;padding:20px 30px;margin:24px 0;position:relative}
+.page h2{font-family:'Faster One',sans-serif;font-weight:400;font-size:1.25rem;color:#23202a}
+.page h2::before{content:"";display:inline-block;width:17px;height:17px;border-radius:50%;background:#c1271f;border:2px solid #23202a;margin-right:10px;vertical-align:-2px}
+ul{line-height:1.6}code,pre{font-family:ui-monospace,Menlo,monospace}pre{background:#17151a;color:#f5efe2;padding:14px;overflow:auto}
 .knobrow{display:flex;gap:8px;justify-content:center;margin:8px 0}
-.knobrow i{width:15px;height:15px;border-radius:50%;background:#efe8d0;border:2px solid #54432c}
-.knobrow i.out{transform:translateX(4px);border-color:#8a2c2c}
-footer{color:#cfc4a6;text-align:center;font-family:SpecialElite,monospace}
-a{color:#7a5a20}
+.knobrow i{width:15px;height:15px;border-radius:50%;background:#2a272c;border:2px solid #e86a1e}
+.knobrow i.out{background:#c1271f;border-color:#ffb347}
+footer{color:#d8cfba;text-align:center;font-weight:600;letter-spacing:.04em}
+a{color:#b3540e}
 </style></head>
 <body><div class="service">
-<section class="vestry"><h2>Vestry notice, read first: what cannot be undone</h2>
+<section class="vestry"><h2>Staging notice, read first: what cannot be undone</h2>
 <p>Do not run this script as written. It will most likely break your system. In plain words, boost_macos_performance.sh:</p>
 <ul>
 <li>Turns off the LaunchServices quarantine prompt, the dialog macOS shows before you open an app you downloaded.</li>
@@ -36,9 +38,9 @@ a{color:#7a5a20}
 <li>Runs fsck -fy on the live disk the script itself is running from.</li>
 </ul>
 <p>Each of those steps now stops and asks you to type YES for that step before it runs. Any other answer skips that step, and typing YES once does not approve any later step. The gates do not make the rest of the script safe. It is preserved here as a research draft, not as a recommended tool.</p></section>
-<header><img src="assets/intro-banner.png" alt="The organ loft in one shaft of window light: pedalboard, shoe shelf with two clean ovals, pipes behind">
+<header><img src="assets/intro-banner.png" alt="A dragster at the far end of the strip with its red parachute blooming open behind it, flame still at the headers and smoke curling over the asphalt under sodium track light">
 <h1>MacOS-Performance-Tweaks</h1>
-<p class="lede">One script, boost_macos_performance.sh, and the order in which it does its work. The warning above stays first on this page, as it does in the README, because the script's deletions and shutdowns cannot be taken back.</p>
+<p class="lede">One script, boost_macos_performance.sh, and the run it makes down the strip, one gated step at a time. The warning above stays first on this page, as it does in the README, because the script's deletions and shutdowns cannot be taken back.</p>
 <nav><a class="knob red" href="#removes"><i></i>Removes</a><a class="knob red" href="#off"><i></i>Switches off</a><a class="knob" href="#run"><i></i>Run and read</a><a class="knob" href="#restore"><i></i>Restore</a><a class="knob" href="https://github.com/Epsilon0xCell/MacOS-Performance-Tweaks"><i></i>The repo</a></nav>
 </header>
 <section class="page" id="removes"><h2>First, what the script removes</h2>
@@ -53,5 +55,5 @@ a{color:#7a5a20}
 <div class="knobrow"><i></i><i></i><i></i><i class="out"></i><i></i><i></i></div>
 <section class="page" id="restore"><h2>Fourth, what can be restored, and what cannot</h2>
 <p>Settings can mostly be set back: Time Machine can be turned on again, DNS and power settings can be rewritten, Finder and Dock options can be reset. What cannot be restored: deleted snapshots, logs, caches, the sleep image, and Trash contents. No fresh backup exists until a new one completes after Time Machine is back on.</p></section>
-<footer><p>The shelf, drawn small: both pairs of shoes in place, side by side.</p></footer>
+<footer><p>The strip, drawn small: one car at the line, chute packed, lights red. Fonts: Faster One and Rajdhani, self-hosted (SIL Open Font License 1.1, licenses beside the font files).</p></footer>
 </div></body></html>
